@@ -24,30 +24,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// temporary data model
-data class StudySession(
-    val data: String,
-    val duration: Float,
-    val subject: String
-)
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studytrack.data.StudySession
+import com.example.studytrack.ui.MainScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(){
-    // temporary data for viewing
-    val targetYear = 100f
-    val hoursStudied = 45f
-    val sessions = listOf(
-        StudySession("2026-01-28", 1.5f, "Jetpack Compose"),
-        StudySession("2026-01-27", 2.0f, "Kotlin Coroutines"),
-        StudySession("2026-01-26", 1.5f, "Room Database")
-    )
+fun MainScreen(viewModel: MainScreenViewModel = viewModel()){
+    // Coletando dados reais da ViewModel
+    val sessions by viewModel.sessions.collectAsState()
+    val totalHours by viewModel.totalHours.collectAsState()
+    
+    val targetYear = 100f // Meta fixa por enquanto
 
     Scaffold(
         topBar = {
@@ -55,12 +50,16 @@ fun MainScreen(){
                 title = { Text("Study Track") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*open registration screen */}
+                onClick = { 
+                    // Exemplo: Adicionando uma sessão de teste para ver o banco funcionar
+                    viewModel.addSession(StudySession(date = "2024-05-20", duration = 2f, subject = "Kotlin"))
+                }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Register study session")
             }
@@ -73,13 +72,13 @@ fun MainScreen(){
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Target year card
-            item { TargetCard(targetYear,hoursStudied) }
+            // 1. Card de Meta
+            item { TargetCard(targetYear, totalHours) }
 
-            // 2. Statistics card
-            item { StatisticsCard(hoursStudied) }
+            // 2. Card de Estatísticas
+            item { StatisticsCard(totalHours) }
 
-            // 3. Title of the last sessions
+            // 3. Título das últimas sessões
             item {
                 Text(
                     text = "Last Sessions",
@@ -89,17 +88,17 @@ fun MainScreen(){
                 )
             }
 
-            // 4. List of sessions
+            // 4. Lista de sessões reais do banco
             items(sessions) { session ->
                 StudySessionCard(session)
             }
         }
     }
-} // end of MainScreen()
+}
 
 @Composable
 fun TargetCard(targetYear: Float, hoursStudied: Float) {
-    val progress = hoursStudied / targetYear
+    val progress = if (targetYear > 0) hoursStudied / targetYear else 0f
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -116,9 +115,8 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Progress bar
             LinearProgressIndicator(
-              progress = progress,
+                progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(12.dp)
@@ -127,7 +125,7 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Hours studied: ${hoursStudied.toInt()}h / ${targetYear.toInt()}h (${(progress * 100).toInt()}%)",
+                text = "Hours studied: ${hoursStudied}h / ${targetYear.toInt()}h (${(progress * 100).toInt()}%)",
                 fontSize = 16.sp
             )
         }
@@ -135,10 +133,10 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
 }
 
 @Composable
-fun StatisticsCard(hoursStudied: Float){
+fun StatisticsCard(totalHours: Float){
     Card(
-    modifier = Modifier.fillMaxWidth(),
-    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -155,9 +153,9 @@ fun StatisticsCard(hoursStudied: Float){
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                StatisticItem("Today", "1.5h")
-                StatisticItem("Week", "10h")
-                StatisticItem("Average/day", "2.1h")
+                StatisticItem("Today", "---") // Lógica de hoje pode ser adicionada depois
+                StatisticItem("Week", "---")
+                StatisticItem("Total", "${totalHours}h")
             }
         }
     }
@@ -200,7 +198,7 @@ fun StudySessionCard(session: StudySession) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = session.data,
+                    text = session.date,
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -214,5 +212,3 @@ fun StudySessionCard(session: StudySession) {
         }
     }
 }
-
-
