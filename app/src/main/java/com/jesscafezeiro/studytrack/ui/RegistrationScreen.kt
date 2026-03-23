@@ -1,4 +1,4 @@
-package com.example.studytrack.ui
+package com.jesscafezeiro.studytrack.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,11 +34,16 @@ fun RegistrationScreen(
                 title = { Text("Register Study Session") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onPrimary // Cor do ícone
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primary, // Mudei de primaryContainer para primary
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary // Cor do texto do título
                 )
             )
         }
@@ -147,7 +152,6 @@ fun RegistrationScreen(
                     Text("Save")
                 }
             }
-
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.studytrack
+package com.jesscafezeiro.studytrack
 
 import org.junit.Test
 

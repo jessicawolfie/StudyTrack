@@ -1,4 +1,4 @@
-package com.example.studytrack
+package com.jesscafezeiro.studytrack
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,16 +15,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.studytrack.data.StudySession
-import com.example.studytrack.ui.MainScreenViewModel
+import com.jesscafezeiro.studytrack.data.StudySession
+import com.jesscafezeiro.studytrack.ui.MainScreenViewModel
+import com.jesscafezeiro.studytrack.ui.theme.OffWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = viewModel(),
-    onNavigateToRegistration: () -> Unit //
+    onNavigateToRegistration: () -> Unit
 ){
-    // Collecting actual data from the ViewModel
     val sessions by viewModel.sessions.collectAsState()
     val totalHours by viewModel.totalHours.collectAsState()
     
@@ -42,9 +42,12 @@ fun MainScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onNavigateToRegistration // Agora navega para a tela de registro
+                onClick = onNavigateToRegistration,
+                containerColor = OffWhite,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Register study session")
+                Icon(Icons.Default.Add,
+                    contentDescription = "Register study session")
             }
         }
     ) { paddingValues ->
@@ -55,13 +58,10 @@ fun MainScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Target Card
             item { TargetCard(targetYear, totalHours) }
 
-            // 2. Statistics Card
             item { StatisticsCard(totalHours) }
 
-            // 3. Title of the last few sessions
             item {
                 Text(
                     text = "Last Sessions",
@@ -71,7 +71,6 @@ fun MainScreen(
                 )
             }
 
-            // 4. List of actual bank sessions
             items(sessions) { session ->
                 StudySessionCard(session)
             }
@@ -85,7 +84,8 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = OffWhite)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -93,7 +93,8 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
             Text(
                 text = "Target Year: ${targetYear.toInt()}h",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -109,7 +110,8 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
 
             Text(
                 text = "Hours studied: ${hoursStudied}h / ${targetYear.toInt()}h (${(progress * 100).toInt()}%)",
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -119,7 +121,8 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
 fun StatisticsCard(totalHours: Float){
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = OffWhite)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -127,7 +130,8 @@ fun StatisticsCard(totalHours: Float){
             Text(
                 text = "Statistics",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(8.dp))

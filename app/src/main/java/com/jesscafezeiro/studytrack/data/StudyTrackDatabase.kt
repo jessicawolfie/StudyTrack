@@ -1,4 +1,4 @@
-package com.example.studytrack.data
+package com.jesscafezeiro.studytrack.data
 
 import android.content.Context
 import androidx.room.Database

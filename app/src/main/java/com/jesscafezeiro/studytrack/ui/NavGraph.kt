@@ -1,12 +1,12 @@
-package com.example.studytrack.ui
+package com.jesscafezeiro.studytrack.ui
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.studytrack.MainScreen
-import com.example.studytrack.data.StudySession
+import com.jesscafezeiro.studytrack.MainScreen
+import com.jesscafezeiro.studytrack.data.StudySession
 
 @Composable
 fun NavGraph(viewModel: MainScreenViewModel = viewModel()) {
@@ -14,8 +14,20 @@ fun NavGraph(viewModel: MainScreenViewModel = viewModel()) {
 
     NavHost(
         navController = navController,
-        startDestination = "MainScreen"
+        startDestination = "SplashScreen"
     ) {
+        // Splash Screen
+        composable("SplashScreen") {
+            SplashScreen(
+                onNavigateToMain = {
+                    navController.navigate("MainScreen") {
+                        // Limpa a splash do histórico para não voltar ao clicar em "back"
+                        popUpTo("SplashScreen") { inclusive = true }
+                    }
+                }
+            )
+        }
+
         // Main Screen
         composable("MainScreen") {
             MainScreen(

@@ -1,4 +1,4 @@
-package com.example.studytrack.data
+package com.jesscafezeiro.studytrack.data
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow

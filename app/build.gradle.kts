@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.studytrack"
+    namespace = "com.jesscafezeiro.studytrack"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.studytrack"
+        applicationId = "com.jesscafezeiro.studytrack"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

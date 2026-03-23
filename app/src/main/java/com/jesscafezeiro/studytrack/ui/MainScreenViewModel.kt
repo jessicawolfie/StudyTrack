@@ -1,10 +1,10 @@
-package com.example.studytrack.ui
+package com.jesscafezeiro.studytrack.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.studytrack.data.StudySession
-import com.example.studytrack.data.StudyTrackDatabase
+import com.jesscafezeiro.studytrack.data.StudySession
+import com.jesscafezeiro.studytrack.data.StudyTrackDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

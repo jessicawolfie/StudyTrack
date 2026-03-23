@@ -1,4 +1,4 @@
-package com.example.studytrack.data
+package com.jesscafezeiro.studytrack.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
