@@ -14,13 +14,9 @@ class MainScreenViewModel (application: Application) : AndroidViewModel(applicat
 
     private val dao = StudyTrackDatabase.getDatabase(application).StudySessionDao()
 
-    // Sessions list
-    private val _sessions =
-        MutableStateFlow<List<StudySession>>(emptyList()) // PRIVATE - only the ViewModel can change this
-    val sessions: StateFlow<List<StudySession>> =
-        _sessions.asStateFlow() // PUBLIC - anyone can read this
+    private val _sessions = MutableStateFlow<List<StudySession>>(emptyList())
+    val sessions: StateFlow<List<StudySession>> = _sessions.asStateFlow()
 
-    // Total hours studied
     private val _totalHours = MutableStateFlow(0f)
     val totalHours: StateFlow<Float> = _totalHours.asStateFlow()
 
@@ -32,7 +28,6 @@ class MainScreenViewModel (application: Application) : AndroidViewModel(applicat
         viewModelScope.launch {
             dao.getAllSessions().collect { list ->
                 _sessions.value = list
-
             }
         }
 
@@ -49,5 +44,9 @@ class MainScreenViewModel (application: Application) : AndroidViewModel(applicat
         }
     }
 
+    fun deleteSession(session: StudySession) {
+        viewModelScope.launch {
+            dao.delete(session)
+        }
+    }
 }
-

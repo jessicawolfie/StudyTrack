@@ -5,12 +5,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +46,7 @@ fun MainScreen(
             FloatingActionButton(
                 onClick = onNavigateToRegistration,
                 containerColor = OffWhite,
-                contentColor = MaterialTheme.colorScheme.primary
+                contentColor = Color.Black // Ícone de adicionar (+) agora é preto
             ) {
                 Icon(Icons.Default.Add,
                     contentDescription = "Register study session")
@@ -72,7 +74,10 @@ fun MainScreen(
             }
 
             items(sessions) { session ->
-                StudySessionCard(session)
+                StudySessionCard(
+                    session = session,
+                    onDelete = { viewModel.deleteSession(session) }
+                )
             }
         }
     }
@@ -166,7 +171,10 @@ fun StatisticItem(title: String, value: String) {
 }
 
 @Composable
-fun StudySessionCard(session: StudySession) {
+fun StudySessionCard(
+    session: StudySession,
+    onDelete: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -178,7 +186,7 @@ fun StudySessionCard(session: StudySession) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = session.subject,
                     fontSize = 16.sp,
@@ -189,13 +197,21 @@ fun StudySessionCard(session: StudySession) {
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                Text(
+                    text = "${session.duration}h",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
-            Text(
-                text = "${session.duration}h",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            
+            IconButton(onClick = onDelete) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Session",
+                    tint = Color.Black // Ícone da lixeira agora é preto
+                )
+            }
         }
     }
 }
