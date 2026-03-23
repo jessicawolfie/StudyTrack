@@ -12,7 +12,7 @@ A minimalist study tracking app to help you achieve your learning goals. Set you
 - **Modern UI** - Clean, Material Design 3 interface with custom splash screen
 
 ## Screenshots 📱
-<img width="410" height="250" alt="pitch_study_track" src="https://github.com/user-attachments/assets/c4d1a6ae-a73b-413f-8a83-3bb42f429f15" />
+<img width="610" height="350" alt="pitch_study_track" src="https://github.com/user-attachments/assets/c4d1a6ae-a73b-413f-8a83-3bb42f429f15" />
 
 
 
