@@ -1,6 +1,8 @@
 package com.jesscafezeiro.studytrack.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,6 +36,9 @@ fun NavGraph(viewModel: MainScreenViewModel = viewModel()) {
                 viewModel = viewModel,
                 onNavigateToRegistration = {
                     navController.navigate("RegistrationScreen")
+                },
+                onNavigateToSettings = {
+                    navController.navigate("settings_screen")
                 }
             )
         }
@@ -50,6 +55,20 @@ fun NavGraph(viewModel: MainScreenViewModel = viewModel()) {
                         )
                     )
                     navController.popBackStack()
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable("settings_screen") {
+            val currentGoal by viewModel.annualGoal.collectAsState()
+
+            SettingsScreen(
+                currentGoal = currentGoal,
+                onSaveGoal = { goal ->
+                    viewModel.saveAnnualGoal(goal)
                 },
                 onBack = {
                     navController.popBackStack()

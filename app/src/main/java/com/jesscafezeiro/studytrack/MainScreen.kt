@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,17 +26,26 @@ import com.jesscafezeiro.studytrack.ui.theme.OffWhite
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = viewModel(),
-    onNavigateToRegistration: () -> Unit
+    onNavigateToRegistration: () -> Unit,
+    onNavigateToSettings: () -> Unit = {}
 ){
     val sessions by viewModel.sessions.collectAsState()
     val totalHours by viewModel.totalHours.collectAsState()
-    
-    val targetYear = 100f
+    val annualGoal by viewModel.annualGoal.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Study Track") },
+                actions = {
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -46,10 +56,12 @@ fun MainScreen(
             FloatingActionButton(
                 onClick = onNavigateToRegistration,
                 containerColor = OffWhite,
-                contentColor = Color.Black // Ícone de adicionar (+) agora é preto
+                contentColor = Color.Black
             ) {
-                Icon(Icons.Default.Add,
-                    contentDescription = "Register study session")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Register study session"
+                )
             }
         }
     ) { paddingValues ->
@@ -60,7 +72,7 @@ fun MainScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { TargetCard(targetYear, totalHours) }
+            item { TargetCard(annualGoal, totalHours) }
 
             item { StatisticsCard(totalHours) }
 
@@ -177,7 +189,8 @@ fun StudySessionCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = OffWhite)
     ) {
         Row(
             modifier = Modifier
@@ -204,12 +217,12 @@ fun StudySessionCard(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-            
+
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete Session",
-                    tint = Color.Black // Ícone da lixeira agora é preto
+                    tint = Color.Black
                 )
             }
         }
