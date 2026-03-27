@@ -1,5 +1,6 @@
 package com.jesscafezeiro.studytrack.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,11 +23,37 @@ fun RegistrationScreen(
     var durationHours by remember { mutableStateOf("") }
     var durationMinutes by remember { mutableStateOf("") }
 
-    // Current date as default
-    val currentDate = remember {
-        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-    }
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val currentDate = remember { sdf.format(Date()) }
     var selectedDate by remember { mutableStateOf(currentDate) }
+
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = System.currentTimeMillis()
+    )
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        selectedDate = sdf.format(Date(it))
+                    }
+                    showDatePicker = false
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -35,15 +62,15 @@ fun RegistrationScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack, 
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onPrimary // Cor do ícone
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary, // Mudei de primaryContainer para primary
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary // Cor do texto do título
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -55,13 +82,21 @@ fun RegistrationScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Date field
+            // Date field (clickable to open DatePicker)
             OutlinedTextField(
                 value = selectedDate,
-                onValueChange = { selectedDate = it },
+                onValueChange = { },
                 label = { Text("Date") },
                 readOnly = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showDatePicker = true },
+                enabled = false, // Makes it look like a button/clickable field
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             )
 
             // Subject field
@@ -74,18 +109,16 @@ fun RegistrationScreen(
                 singleLine = true
             )
 
-            // Duration Fields (Hours and Minutes)
+            // Duration Fields
             Text(
                 text = "Duration",
                 style = MaterialTheme.typography.titleMedium
             )
 
-            // Duration Fields (Hours and Minutes)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Hours field
                 OutlinedTextField(
                     value = durationHours,
                     onValueChange = {
@@ -100,7 +133,6 @@ fun RegistrationScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                // Minutes field
                 OutlinedTextField(
                     value = durationMinutes,
                     onValueChange = {
@@ -118,12 +150,10 @@ fun RegistrationScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Cancel button
                 OutlinedButton(
                     onClick = onBack,
                     modifier = Modifier.weight(1f)
@@ -131,10 +161,8 @@ fun RegistrationScreen(
                     Text("Cancel")
                 }
 
-                // Save button
                 Button(
                     onClick = {
-                        // Basic validation
                         if (subject.isNotBlank()) {
                             val hours = durationHours.toIntOrNull() ?: 0
                             val minutes = durationMinutes.toIntOrNull() ?: 0

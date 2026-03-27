@@ -31,6 +31,8 @@ fun MainScreen(
 ){
     val sessions by viewModel.sessions.collectAsState()
     val totalHours by viewModel.totalHours.collectAsState()
+    val todayHours by viewModel.todayHours.collectAsState()
+    val weekHours by viewModel.weekHours.collectAsState()
     val annualGoal by viewModel.annualGoal.collectAsState()
 
     Scaffold(
@@ -74,7 +76,7 @@ fun MainScreen(
         ) {
             item { TargetCard(annualGoal, totalHours) }
 
-            item { StatisticsCard(totalHours) }
+            item { StatisticsCard(todayHours, weekHours, totalHours) }
 
             item {
                 Text(
@@ -120,7 +122,9 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(12.dp)
+                    .height(12.dp),
+                color = MaterialTheme.colorScheme.primary, // Cor da barra preenchida
+                trackColor = MaterialTheme.colorScheme.surfaceVariant // Cor do fundo da barra
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -135,7 +139,7 @@ fun TargetCard(targetYear: Float, hoursStudied: Float) {
 }
 
 @Composable
-fun StatisticsCard(totalHours: Float){
+fun StatisticsCard(todayHours: Float, weekHours: Float, totalHours: Float){
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -157,8 +161,8 @@ fun StatisticsCard(totalHours: Float){
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                StatisticItem("Today", "---")
-                StatisticItem("Week", "---")
+                StatisticItem("Today", "${todayHours}h")
+                StatisticItem("Week", "${weekHours}h")
                 StatisticItem("Total", "${totalHours}h")
             }
         }
